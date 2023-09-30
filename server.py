@@ -1,8 +1,10 @@
 import asyncio
+import http
 import json
-import uuid
+import signal
 
 import websockets
+
 import constants
 import services
 
@@ -48,12 +50,24 @@ async def player_handler(websocket):
         await services.remove_player(player_id)
 
 
+async def health_check(path, request_headers):
+    if path == "/healthz":
+        return http.HTTPStatus.OK, [], b"OK\n"
+
+
 async def main():
-    """
-    Main function to run the WebSocket server.
-    """
-    async with websockets.serve(player_handler, "", 8001):
-        await asyncio.Future()
+    # Set the stop condition when receiving SIGTERM.
+    loop = asyncio.get_running_loop()
+    stop = loop.create_future()
+    loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
+
+    async with websockets.serve(
+            player_handler,
+            host="",
+            port=8001,
+            process_request=health_check,
+    ):
+        await stop
 
 
 if __name__ == "__main__":
