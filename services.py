@@ -69,10 +69,8 @@ async def send_positions():
     Notifies all players about the current players positions.
     """
     if constants.PLAYERS:
-        message = json.dumps(constants.POSITIONS)
-        await asyncio.gather(
-            *[player.send(message) for player in constants.ADMINS.values()]
-        )
+        message = json.dumps({"key": "positions", "payload": constants.POSITIONS})
+        broadcast(constants.ADMINS.values(), message)
 
 
 def send_player_leave(player_id):
