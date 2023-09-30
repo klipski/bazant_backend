@@ -34,7 +34,7 @@ async def player_handler(websocket):
             key = data.get("key")
 
             if key == "init":
-                await services.initialize_player(data, websocket)
+                player_id = await services.initialize_player(data, websocket)
             elif key == "start":
                 await services.start_game(data, websocket)
                 await services.send_board()
@@ -43,11 +43,14 @@ async def player_handler(websocket):
                 await services.send_positions()
             elif key == "board_change":
                 await services.board_change(data, websocket)
+            elif key == "hint":
+                await services.hint(data, websocket)
             else:
                 print("key", key)
                 await websocket.send(json.dumps({"message": "Message not supported"}))
     except websockets.ConnectionClosedOK:
         await services.remove_player(player_id)
+        services.send_player_leave(player_id)
 
 
 async def health_check(path, request_headers):
