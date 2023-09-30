@@ -12,13 +12,22 @@ async def player_handler(websocket):
     Handles player connections, receives player data, and updates other players.
     """
     player_id = None
+    print("device connected to websocket")
     try:
         while True:
             print("PLAYERS", constants.PLAYERS)
             print("ADMINS", constants.ADMINS)
+            print("BOARD", constants.BOARD)
 
             message = await websocket.recv()
-            data = json.loads(message)
+            try:
+                data = json.loads(message)
+            except json.JSONDecodeError:
+                print("Not supported message")
+                await websocket.send(json.dumps({"message": "Message not supported"}))
+
+                continue
+
             key = data.get("key")
 
             if key == "init":
@@ -34,9 +43,6 @@ async def player_handler(websocket):
             else:
                 print("key", key)
                 await websocket.send(json.dumps({"message": "Message not supported"}))
-    except json.JSONDecodeError:
-        print("Not supported message")
-        await websocket.send(json.dumps({"message": "Message not supported"}))
     except websockets.ConnectionClosedOK:
         await services.remove_player(player_id)
 
