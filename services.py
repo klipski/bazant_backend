@@ -60,10 +60,8 @@ async def send_board():
     """
     Notifies all players about the current state of the game board.
     """
-    message = json.dumps(constants.BOARD)
-    await asyncio.gather(
-        *[player.send(message) for player in [*constants.PLAYERS.values(), *constants.ADMINS.values()]]
-    )
+    message = json.dumps({"key": "send_board", "payload": constants.BOARD})
+    broadcast(constants.ADMINS.values(), message)
 
 
 async def send_positions():
