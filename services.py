@@ -85,10 +85,10 @@ async def board_change(data, websocket):
     payload = data.get("payload")
     player_id = data.get("playerId")
     cells = constants.BOARD.get("cells")
-    [cell.update(payload) for cell in cells if payload["cellID"] == cell["cellID"]]
+    [cell.update(payload) for cell in cells if payload["cellId"] == cell["cellId"]]
 
     message = json.dumps({"key": "board_change", "playerId": player_id, "payload": payload})
-    broadcast(constants.ADMINS.values(), message)
+    broadcast([*constants.ADMINS.values(), *constants.PLAYERS.values()], message)
 
 
 async def handle_hints(data, websocket):
