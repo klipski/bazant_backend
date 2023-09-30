@@ -23,7 +23,7 @@ async def start_game(data, websocket):
     """
     Updates game board.
     """
-    payload = data.get("payload")
+    payload = json.loads(data.get("payload"))
     constants.BOARD = payload
     constants.BONES = 0
 
@@ -33,7 +33,7 @@ async def move_player(data, websocket):
     Updates players positions.
     """
     player_id = data.get("playerId")
-    payload = data.get("payload")
+    payload = json.loads(data.get("payload"))
     constants.POSITIONS[player_id] = payload
 
 
@@ -86,7 +86,7 @@ async def board_change(data, websocket):
     """
     Updates game board and returns changed cell to admin.
     """
-    payload = data.get("payload")
+    payload = json.loads(data.get("payload"))
     player_id = data.get("playerId")
     cells = constants.BOARD.get("cells")
     [cell.update(payload) for cell in cells if payload["cellId"] == cell["cellId"]]
