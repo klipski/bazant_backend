@@ -23,9 +23,13 @@ async def start_game(data, websocket):
     constants.BOARD = payload
 
 
-# todo: zapisz ruch graczy
 async def move_player(data, websocket):
+    """
+    Updates players positions.
+    """
+    player_id = data.get("playerId")
     payload = data.get("payload")
+    constants.POSITIONS[player_id] = payload
 
 
 async def send_board():
@@ -38,17 +42,15 @@ async def send_board():
     )
 
 
-# TODO: wyslij info o polozeniu wszystkich graczy
 async def send_positions():
     """
-    Notifies all players about the current state of the game, including player positions and colors.
+    Notifies all players about the current players positions.
     """
-    # if PLAYERS:
-    #     message = json.dumps(
-    #         {"type": "update", "players": {player_id: player[0] for player_id, player in PLAYERS.items()}}
-    #     )
-    #     await asyncio.gather(*[player[1].send(message) for player in PLAYERS.values()])
-    pass
+    if constants.PLAYERS:
+        message = json.dumps(constants.POSITIONS)
+        await asyncio.gather(
+            *[player.send(message) for player in [*constants.PLAYERS.values(), *constants.ADMINS.values()]]
+        )
 
 
 # todo: obsluga zmiany komorki
