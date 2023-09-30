@@ -1,14 +1,15 @@
 import asyncio
 import json
 import uuid
-import constants
 
 from websockets import broadcast
 
+import constants
 
-async def initialize_player(message, websocket):
+
+def initialize_player(message, websocket):
     """
-    Initialize game.
+    Initialize player.
     """
     player_id = str(uuid.uuid4())  # Generate a unique player ID using UUID
     player_type = message.get("type")
@@ -16,7 +17,6 @@ async def initialize_player(message, websocket):
         constants.ADMINS[player_id] = websocket
     else:
         constants.PLAYERS[player_id] = websocket
-    await websocket.send(json.dumps({"key": "assigned", "playerId": player_id}))
     return player_id
 
 
@@ -47,6 +47,13 @@ async def remove_player(player_id):
         del constants.PLAYERS[player_id]
     if player_id in constants.ADMINS:
         del constants.ADMINS[player_id]
+
+
+async def send_player_id(player_id, websocket):
+    """
+    Sends playerId to player.
+    """
+    await websocket.send(json.dumps({"key": "assigned", "playerId": player_id}))
 
 
 async def send_board():
@@ -86,3 +93,12 @@ async def board_change(data, websocket):
 
     message = json.dumps({"key": "board_change", "playerId": player_id, "payload": payload})
     broadcast(constants.ADMINS.values(), message)
+
+
+async def handle_hints(data, websocket):
+    """
+    Handles hints from admin to player.
+    """
+    player_id = data.get("playerId")
+    if player_id in constants.PLAYERS:
+        await constants.PLAYERS[player_id].send(json.dumps(data))
