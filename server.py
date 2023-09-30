@@ -33,8 +33,10 @@ async def player_handler(websocket):
                 await services.board_change(data, websocket)
             else:
                 print("key", key)
+                await websocket.send(json.dumps({"message": "Message not supported"}))
     except json.JSONDecodeError:
         print("Not supported message")
+        await websocket.send(json.dumps({"message": "Message not supported"}))
     except websockets.ConnectionClosedOK:
         await services.remove_player(player_id)
 

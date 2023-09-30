@@ -15,6 +15,14 @@ async def initialize_player(message, websocket):
     await websocket.send(json.dumps({"key": "assigned", "playerId": player_id}))
 
 
+async def start_game(data, websocket):
+    """
+    Updates game board.
+    """
+    payload = data.get("payload")
+    constants.BOARD = payload
+
+
 # TODO: wyslij info o polozeniu wszystkich graczy
 async def send_positions():
     """
@@ -33,13 +41,10 @@ async def move_player(data, websocket):
     pass
 
 
-# todo: start gry
-async def start_game(data, websocket):
-    payload = data.get("payload")
-    constants.BOARD = payload
-
-
 async def send_board():
+    """
+    Notifies all players about the current state of the game board.
+    """
     message = json.dumps(constants.POSITIONS)
     await asyncio.gather(
         *[player.send(message) for player in [*constants.PLAYERS.values(), *constants.ADMINS.values()]]
