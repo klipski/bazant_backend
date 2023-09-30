@@ -6,6 +6,9 @@ import constants
 
 
 async def initialize_player(message, websocket):
+    """
+    Initialize game.
+    """
     player_id = str(uuid.uuid4())  # Generate a unique player ID using UUID
     player_type = message.get("type")
     if player_type == "admin":
@@ -32,6 +35,18 @@ async def move_player(data, websocket):
     constants.POSITIONS[player_id] = payload
 
 
+async def remove_player(player_id):
+    """
+    Removes player from data structures by player ID.
+    """
+    if player_id in constants.PLAYERS:
+        del constants.PLAYERS[player_id]
+    if player_id in constants.POSITIONS:
+        del constants.PLAYERS[player_id]
+    if player_id in constants.ADMINS:
+        del constants.PLAYERS[player_id]
+
+
 async def send_board():
     """
     Notifies all players about the current state of the game board.
@@ -55,9 +70,4 @@ async def send_positions():
 
 # todo: obsluga zmiany komorki
 async def board_change(data, websocket):
-    pass
-
-
-# todo: usun gracza
-async def remove_player(player_id):
     pass
