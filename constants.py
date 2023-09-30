@@ -3,3 +3,4 @@ PLAYERS = {}
 POSITIONS = {}
 BOARD = {}
 HINTS = {}
+BONES = 0
