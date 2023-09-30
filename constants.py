@@ -1,0 +1,5 @@
+ADMINS = {}
+PLAYERS = {}
+POSITIONS = {}
+BOARD = {}
+HINTS = {}
