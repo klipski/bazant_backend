@@ -13,6 +13,7 @@ async def player_handler(websocket):
     """
     player_id = None
     print("device connected to websocket")
+    await websocket.send("device connected to websocket")
     try:
         while True:
             print("PLAYERS", constants.PLAYERS)
