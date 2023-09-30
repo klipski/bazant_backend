@@ -3,6 +3,7 @@ import json
 import uuid
 
 import constants
+from websockets import broadcast
 
 
 async def initialize_player(message, websocket):
@@ -16,6 +17,7 @@ async def initialize_player(message, websocket):
     else:
         constants.PLAYERS[player_id] = websocket
     await websocket.send(json.dumps({"key": "assigned", "playerId": player_id}))
+    return player_id
 
 
 async def start_game(data, websocket):
@@ -44,7 +46,7 @@ async def remove_player(player_id):
     if player_id in constants.POSITIONS:
         del constants.PLAYERS[player_id]
     if player_id in constants.ADMINS:
-        del constants.PLAYERS[player_id]
+        del constants.ADMINS[player_id]
 
 
 async def send_board():
@@ -64,8 +66,13 @@ async def send_positions():
     if constants.PLAYERS:
         message = json.dumps(constants.POSITIONS)
         await asyncio.gather(
-            *[player.send(message) for player in [*constants.PLAYERS.values(), *constants.ADMINS.values()]]
+            *[player.send(message) for player in constants.ADMINS.values()]
         )
+
+
+def send_player_leave(player_id):
+    message = json.dumps({"key": "playerLeave", "playerId": player_id})
+    broadcast(constants.ADMINS.values(), message)
 
 
 # todo: obsluga zmiany komorki
