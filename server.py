@@ -38,12 +38,13 @@ async def player_handler(websocket):
                 if not player_id:
                     player_id = services.initialize_player(data, websocket)
                 await services.send_player_id(player_id, websocket)
+                await services.send_new_player(player_id)
             elif key == "start":
                 await services.start_game(data, websocket)
                 await services.send_board()
             elif key == "move":
                 await services.move_player(data, websocket)
-                await services.send_positions()
+                await services.send_positions(data)
             elif key == "board_change":
                 await services.board_change(data, websocket)
             elif key == "hint":

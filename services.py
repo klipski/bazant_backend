@@ -56,6 +56,11 @@ async def send_player_id(player_id, websocket):
     await websocket.send(json.dumps({"key": "assigned", "playerId": player_id}))
 
 
+async def send_new_player(player_id):
+    message = json.dumps({"key": "new_player_enter", "playerId": player_id})
+    broadcast(constants.ADMINS.values(), message)
+
+
 async def send_board():
     """
     Notifies all players about the current state of the game board.
@@ -64,13 +69,12 @@ async def send_board():
     broadcast(constants.ADMINS.values(), message)
 
 
-async def send_positions():
+async def send_positions(data):
     """
     Notifies all players about the current players positions.
     """
-    if constants.PLAYERS:
-        message = json.dumps({"key": "positions", "payload": constants.POSITIONS})
-        broadcast(constants.ADMINS.values(), message)
+    message = json.dumps(data)
+    broadcast(constants.ADMINS.values(), message)
 
 
 def send_player_leave(player_id):
