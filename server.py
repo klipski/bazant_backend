@@ -44,7 +44,7 @@ async def player_handler(websocket):
                 await services.send_board()
             elif key == "move":
                 await services.move_player(data, websocket)
-                await services.send_positions()
+                await services.send_positions(data)
             elif key == "board_change":
                 await services.board_change(data, websocket)
             elif key == "hint":

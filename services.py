@@ -69,13 +69,12 @@ async def send_board():
     broadcast(constants.ADMINS.values(), message)
 
 
-async def send_positions():
+async def send_positions(data):
     """
     Notifies all players about the current players positions.
     """
-    if constants.PLAYERS:
-        message = json.dumps({"key": "positions", "payload": constants.POSITIONS})
-        broadcast(constants.ADMINS.values(), message)
+    message = json.dumps(data)
+    broadcast(constants.ADMINS.values(), message)
 
 
 def send_player_leave(player_id):
