@@ -34,7 +34,9 @@ async def player_handler(websocket):
             key = data.get("key")
 
             if key == "init":
-                player_id = await services.initialize_player(data, websocket)
+                if not player_id:
+                    player_id = services.initialize_player(data, websocket)
+                await services.send_player_id(player_id, websocket)
             elif key == "start":
                 await services.start_game(data, websocket)
                 await services.send_board()
@@ -44,7 +46,10 @@ async def player_handler(websocket):
             elif key == "board_change":
                 await services.board_change(data, websocket)
             elif key == "hint":
-                await services.hint(data, websocket)
+                await services.handle_hints(data, websocket)
+            elif key == "playerLeave":
+                await services.remove_player(player_id)
+                services.send_player_leave(player_id)
             else:
                 print("key", key)
                 await websocket.send(json.dumps({"message": "Message not supported"}))
