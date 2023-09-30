@@ -1,3 +1,4 @@
+import asyncio
 import json
 import uuid
 
@@ -15,7 +16,7 @@ async def initialize_player(message, websocket):
 
 
 # TODO: wyslij info o polozeniu wszystkich graczy
-async def notify_players_about_position():
+async def send_positions():
     """
     Notifies all players about the current state of the game, including player positions and colors.
     """
@@ -34,7 +35,15 @@ async def move_player(data, websocket):
 
 # todo: start gry
 async def start_game(data, websocket):
-    pass
+    payload = data.get("payload")
+    constants.BOARD = payload
+
+
+async def send_board():
+    message = json.dumps(constants.POSITIONS)
+    await asyncio.gather(
+        *[player.send(message) for player in [*constants.PLAYERS.values(), *constants.ADMINS.values()]]
+    )
 
 
 # todo: obsluga zmiany komorki
