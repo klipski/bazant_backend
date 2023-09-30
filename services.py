@@ -2,6 +2,8 @@ import asyncio
 import json
 import uuid
 
+import websockets
+
 import constants
 
 
@@ -53,9 +55,15 @@ async def send_positions():
         )
 
 
-# todo: obsluga zmiany komorki
 async def board_change(data, websocket):
-    pass
+    """
+    Updates game board.
+    """
+    payload = data.get("payload")
+
+    cells = constants.BOARD.get("cells")
+    [cell.update(payload) for cell in cells if payload["cellID"] == cell["cellID"]]
+    websockets.broadcast([*constants.PLAYERS.values(), *constants.ADMINS.values()], json.dumps(cells))
 
 
 # todo: usun gracza
