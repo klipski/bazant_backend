@@ -1,4 +1,3 @@
-import asyncio
 import json
 import uuid
 
@@ -26,6 +25,7 @@ async def start_game(data, websocket):
     """
     payload = data.get("payload")
     constants.BOARD = payload
+    constants.BONES = 0
 
 
 async def move_player(data, websocket):
@@ -98,3 +98,12 @@ async def handle_hints(data, websocket):
     player_id = data.get("playerId")
     if player_id in constants.PLAYERS:
         await constants.PLAYERS[player_id].send(json.dumps(data))
+
+
+async def handle_bone_found(data, websocket):
+    constants.BONES += 1
+
+
+def send_bones():
+    message = json.dumps({"bonesCount": constants.BONES})
+    broadcast([*constants.ADMINS.values(), *constants.PLAYERS.values()], message)

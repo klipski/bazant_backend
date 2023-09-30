@@ -21,6 +21,7 @@ async def player_handler(websocket):
             print("PLAYERS", constants.PLAYERS)
             print("ADMINS", constants.ADMINS)
             print("BOARD", constants.BOARD)
+            print("BONES", constants.BONES)
 
             message = await websocket.recv()
             try:
@@ -50,6 +51,9 @@ async def player_handler(websocket):
             elif key == "playerLeave":
                 await services.remove_player(player_id)
                 services.send_player_leave(player_id)
+            elif key == "boneFound":
+                await services.handle_bone_found(data, websocket)
+                services.send_bones()
             else:
                 print("key", key)
                 await websocket.send(json.dumps({"message": "Message not supported"}))
