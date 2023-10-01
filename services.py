@@ -111,3 +111,9 @@ async def handle_bone_found(data, websocket):
 def send_bones():
     message = json.dumps({"bonesCount": constants.BONES})
     broadcast([*constants.ADMINS.values(), *constants.PLAYERS.values()], message)
+
+
+def send_game_ends_info():
+    if len([cell for cell in constants.BOARD.get("cells", []) if int(cell["type"]) == 1]) == 0:
+        message = json.dumps({"key": "game_ends", "type": "win"})
+        broadcast([*constants.ADMINS.values(), *constants.PLAYERS.values()], message)

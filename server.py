@@ -50,6 +50,7 @@ async def player_handler(websocket):
             elif key == "boneFound":
                 await services.handle_bone_found(data, websocket)
                 services.send_bones()
+                services.send_game_ends_info()
             else:
                 print("key", key)
                 await websocket.send(json.dumps({"message": "Message not supported"}))
