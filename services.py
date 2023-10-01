@@ -65,7 +65,7 @@ async def send_board():
     """
     Notifies all players about the current state of the game board.
     """
-    message = json.dumps({"key": "send_board", "payload": constants.BOARD})
+    message = json.dumps({"key": "send_board", "payload": json.loads(constants.BOARD)})
     broadcast(constants.ADMINS.values(), message)
 
 
