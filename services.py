@@ -57,8 +57,9 @@ async def send_player_id(player_id, websocket):
 
 
 async def send_new_player(player_id):
-    message = json.dumps({"key": "new_player_enter", "playerId": player_id})
-    broadcast(constants.ADMINS.values(), message)
+    if player_id not in constants.ADMINS:
+        message = json.dumps({"key": "new_player_enter", "playerId": player_id})
+        broadcast(constants.ADMINS.values(), message)
 
 
 async def send_board():
