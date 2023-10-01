@@ -18,11 +18,6 @@ async def player_handler(websocket):
     await websocket.send("device connected to websocket")
     try:
         while True:
-            print("PLAYERS", constants.PLAYERS)
-            print("ADMINS", constants.ADMINS)
-            print("BOARD", constants.BOARD)
-            print("BONES", constants.BONES)
-
             message = await websocket.recv()
             try:
                 data = json.loads(message)
