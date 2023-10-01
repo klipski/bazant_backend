@@ -66,7 +66,13 @@ async def send_board():
     Notifies all players about the current state of the game board.
     """
     message = json.dumps({"key": "send_board", "payload": json.dumps(constants.BOARD)})
-    broadcast(constants.ADMINS.values(), message)
+    broadcast([*constants.ADMINS.values(), *constants.PLAYERS.values()], message)
+
+
+async def send_board_to_player(player_id):
+    if player_id in constants.PLAYERS:
+        message = json.dumps({"key": "send_board", "payload": json.dumps(constants.BOARD)})
+        await constants.PLAYERS[player_id].send(message)
 
 
 async def send_positions(data):
