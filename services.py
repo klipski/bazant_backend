@@ -44,7 +44,7 @@ async def remove_player(player_id):
     if player_id in constants.PLAYERS:
         del constants.PLAYERS[player_id]
     if player_id in constants.POSITIONS:
-        del constants.PLAYERS[player_id]
+        del constants.POSITIONS[player_id]
     if player_id in constants.ADMINS:
         del constants.ADMINS[player_id]
 
